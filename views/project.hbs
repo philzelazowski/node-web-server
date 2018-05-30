@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<HTML lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Calorie Adviser</title>
+        <style type="text/css">
+            header {color:green;}
+            #wrapper {
+                width:318px; height:192px; padding: 10px;
+                border:1px solid black; margin-bottom: 30px;
+            }
+            #Top_Div {
+                width:315px; margin-bottom:10px;
+                border-bottom:1px solid black;
+                padding-bottom: 7px;
+            }
+            #title_rt_div {
+                display: inline-block; float:right; margin-right:0px;
+            }
+            #Left_Div {
+                position:relative; top:26px; float:left; width:80px;
+                border:0px solid red;
+            }
+            #Right_Div {float:left; border:0px solid blue;}
+            p {padding:0px; margin:0px; margin-bottom:4px;}
+            input {
+                width:80px; margin-bottom:1px;
+                text-align:right; background-color:beige;
+            }
+            input[type="radio"] {width:20px;}
+            .radio {margin-bottom:5px;}
+            #Bottom_Div {
+                position: relative; clear: left; top: 15px;
+                width:305px; min-height: 18px; background-color: beige;
+                padding:5px; border:1px solid black;
+            }
+            #out_p {
+                margin-left:80px; margin-bottom: 0px; color:red;
+            }
+            .footer {
+                position:fixed; left: 0; bottom: 0; width: 100%; color: white;
+                padding-top:5px; background-color: blue; text-align: center;
+            }
+        </style>
+    </head>
+
+    <body>
+        {{> header}}
+        <h3>{{capitalize welcome}}</h3>
+
+        <div id="wrapper">
+            <div id="Top_Div">
+                <div style="display: inline-block";>
+                    Calorie Adviser
+                </div>
+                <div id="title_rt_div">
+                    by Phil Zelazowski
+                </div>
+            </div>
+
+            <div id="Left_Div">
+                <p>Weight</p>
+                <p>Height</p>
+                <p>Age</p>
+                <p>Life style</p>
+            </div>
+
+            <div id="Right_Div">
+                <form id="myForm">
+                    <div class="radio">
+                        <label style="color:red;">Female</label> <input id="f_radio" type="radio" name="gender">
+                        <label style="color:green;">Male</label> <input id="m_radio" type="radio" name="gender">
+                    </div>
+                    <div>
+                        <input id="weight" type="number"><label> lbs</label>
+                    </div>
+                    <div>
+                        <input id="heightFeet" type="number"><label> ft</label>&nbsp
+                        <input id="heightInches" type="number" max="11" min="0"><label> inches</label>
+                    </div>
+                    <div>
+                        <input id="age" type="number"><label> years</label>
+                    </div>
+                    <div>
+                        <input id="lifeStyle" type="number" min="0" max="5"><label> 0=low,  5=high activity</label>
+                    </div>
+                </form>
+            </div>
+
+            <div id="Bottom_Div">
+                <p id="out_p"></p>
+            </div>
+        </div>
+
+        {{> footer}}
+
+
+        <script type="text/javascript">
+
+//BMR = 66 + ( 6.2 × weight in pounds ) + ( 12.7 × height in inches ) – ( 6.76 × age in years )
+//BMR = 655.1 + ( 4.35 × weight in pounds ) + ( 4.7 × height in inches ) - ( 4.7 × age in years )
+
+            var myForm = document.getElementById("myForm");
+            myForm.addEventListener("change", myFunc);
+
+//              ------ FUNCTIONS ------
+
+            function myFunc() {
+                var BMR = 0;
+                if(event.target.type != "radio") window[event.target.id] = event.target.value;
+
+                if(typeof weight == "string" && typeof heightFeet == "string" && typeof heightInches == "string" && typeof age == "string" && typeof lifeStyle == "string") {
+                    if(f_radio.value == "on" && f_radio.checked) {
+                        BMR = 655.1 + ( 4.35 * Number(weight) ) + ( 4.7 * (Number(heightFeet) * 12 + Number(heightInches)) ) - ( 4.7 * Number(age) );
+                        BMR *=  (0.2 * Number(lifeStyle)) + 1;
+                        document.getElementById("out_p").style.color = "red";
+                    }
+                    else if(m_radio.value == "on" && m_radio.checked) {
+                        BMR = 66 + ( 6.2 * Number(weight) ) + ( 12.7 * (Number(heightFeet) * 12 + Number(heightInches)) ) - ( 6.76 * Number(age) );
+                        BMR *=  (0.2 * Number(lifeStyle)) + 1;
+                        document.getElementById("out_p").style.color = "green";
+                    }
+                    else return;
+                    document.getElementById("out_p").innerHTML = BMR.toFixed(0) + " calories daily intake";
+                }
+                else return;
+            }
+
+        </script>
+    </body>
+</HTML>
